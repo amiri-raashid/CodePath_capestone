@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHI$H TANK — Social Engineering &amp; Phishing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0F1C;
+    --panel:#121A2B;
+    --panel-light:#1C2740;
+    --border:#293755;
+    --paper:#F4F2EC;
+    --paper-border:#DEDACD;
+    --risk:#FF5A3C;
+    --risk-dim:#7A2E1F;
+    --safe:#22D3AE;
+    --safe-dim:#134E42;
+    --gold:#F2B84B;
+    --text:#E9ECF3;
+    --text-muted:#8C96AC;
+    --ink-text:#1A1D22;
+    --ink-muted:#5B5F6B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{font-family:'Space Grotesk', sans-serif; font-weight:700; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--safe);
+    display:flex;
+    align-items:center;
+    gap:0.6rem;
+    margin-bottom:1rem;
+  }
+  .eyebrow.risk{color:var(--risk);}
+  .eyebrow::before{
+    content:"";
+    width:24px;
+    height:1px;
+    background:currentColor;
+    display:inline-block;
+  }
+  section{
+    padding:6rem 8vw;
+    position:relative;
+  }
+  @media (max-width:720px){ section{ padding:4rem 6vw; } }
+
+  /* NAV */
+  nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1.1rem 6vw;
+    background:rgba(10,15,28,0.72);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .logo{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    letter-spacing:0.02em;
+  }
+  .logo span{color:var(--risk);}
+  .navlinks{display:flex; gap:2rem; font-size:0.85rem;}
+  .navlinks a{color:var(--text-muted); text-decoration:none; transition:color .2s;}
+  .navlinks a:hover{color:var(--text);}
+  @media (max-width:720px){ .navlinks{display:none;} }
+
+  /* HERO */
+  .hero{
+    min-height:auto;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:9rem 8vw 4rem;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,90,60,0.10), transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(34,211,174,0.10), transparent 45%),
+      var(--ink);
+  }
+  .hero-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.15;
+    mask-image:linear-gradient(to bottom, black, transparent 70%);
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 6.5vw, 5.2rem);
+    line-height:1.02;
+    max-width:16ch;
+    position:relative;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--risk);
+  }
+  .hero-sub{
+    max-width:46ch;
+    color:var(--text-muted);
+    font-size:1.05rem;
+    margin-top:1.6rem;
+    position:relative;
+  }
+  .hero-cta{
+    display:flex;
+    gap:1rem;
+    margin-top:2.4rem;
+    position:relative;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.82rem;
+    letter-spacing:0.04em;
+    padding:0.85rem 1.6rem;
+    border-radius:2px;
+    text-decoration:none;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:transform .15s, opacity .15s;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--safe); color:#062A24;}
+  .btn-ghost{border-color:var(--border); color:var(--text);}
+
+  .hero-stats{
+    display:flex;
+    gap:0;
+    margin-top:5rem;
+    border-top:1px solid var(--border);
+    position:relative;
+    flex-wrap:wrap;
+  }
+  .stat{
+    flex:1 1 200px;
+    padding:1.6rem 2rem 0 0;
+    border-left:1px solid var(--border);
+    padding-left:1.6rem;
+  }
+  .stat:first-child{border-left:none; padding-left:0;}
+  .stat .num{font-family:'Space Grotesk'; font-size:2.1rem; font-weight:700; color:var(--gold);}
+  .stat .label{font-size:0.82rem; color:var(--text-muted); margin-top:0.3rem;}
+
+  /* RISK SECTION */
+  .risk-section{
+    background:linear-gradient(180deg, var(--ink) 0%, #140B0A 100%);
+    border-top:1px solid var(--border);
+  }
+  .risk-layout{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:4rem;
+    align-items:start;
+  }
+  @media (max-width:900px){ .risk-layout{ grid-template-columns:1fr; } }
+  .risk-layout h2{font-size:clamp(1.8rem, 3.4vw, 2.6rem); max-width:14ch;}
+  .risk-layout p{color:var(--text-muted); margin-top:1.2rem; max-width:52ch;}
+  .risk-list{list-style:none; margin-top:2rem;}
+  .risk-list li{
+    display:flex;
+    gap:1rem;
+    padding:1.1rem 0;
+    border-top:1px solid var(--border);
+    color:var(--text-muted);
+    font-size:0.95rem;
+  }
+  .risk-list li:last-child{border-bottom:1px solid var(--border);}
+  .risk-list b{color:var(--text); font-weight:600; min-width:2ch;}
+  .risk-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-left:3px solid var(--risk);
+    padding:1.8rem;
+  }
+  .risk-card .tag{
+    font-family:'JetBrains Mono'; font-size:0.7rem; color:var(--risk);
+    text-transform:uppercase; letter-spacing:0.1em;
+  }
+  .risk-card h3{margin-top:0.6rem; font-size:1.3rem;}
+  .risk-card p{color:var(--text-muted); margin-top:0.7rem; font-size:0.92rem;}
+
+  /* DEMO SECTION */
+  .demo-section{background:var(--ink);}
+  .demo-head{max-width:60ch; margin-bottom:3rem;}
+  .demo-head h2{font-size:clamp(1.8rem, 3.4vw, 2.6rem);}
+  .demo-head p{color:var(--text-muted); margin-top:1rem;}
+  .demo-toggle{
+    display:inline-flex;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:0.3rem;
+    margin-bottom:2.2rem;
+  }
+  .demo-toggle button{
+    font-family:'JetBrains Mono'; font-size:0.78rem;
+    padding:0.6rem 1.3rem;
+    border:none; border-radius:999px;
+    background:transparent; color:var(--text-muted);
+    cursor:pointer; transition:all .2s;
+  }
+  .demo-toggle button.active{background:var(--safe); color:#062A24;}
+  .demo-toggle button.active.risk-active{background:var(--risk); color:#2A0D06;}
+
+  .inbox{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+    max-width:760px;
+  }
+  .inbox-bar{
+    display:flex; gap:0.4rem; align-items:center;
+    padding:0.9rem 1.2rem;
+    background:var(--panel-light);
+    border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono'; font-size:0.72rem; color:var(--text-muted);
+  }
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--border);}
+  .mail{
+    padding:1.6rem;
+    border-bottom:1px solid var(--border);
+  }
+  .mail-from{font-size:0.85rem; color:var(--text-muted);}
+  .mail-from b{color:var(--text);}
+  .mail-subject{font-size:1.05rem; font-weight:600; margin-top:0.5rem;}
+  .mail-body{color:var(--text-muted); font-size:0.92rem; margin-top:0.9rem; line-height:1.7;}
+  .fake-link{
+    color:var(--risk);
+    text-decoration:underline;
+    text-decoration-style:dotted;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .result-panel{
+    padding:1.8rem;
+    display:flex;
+    gap:1.2rem;
+    align-items:flex-start;
+    min-height:110px;
+    transition:background .3s;
+  }
+  .result-icon{
+    width:38px; height:38px; flex:none;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono'; font-weight:600;
+  }
+  .result-text .title{font-weight:600; font-family:'Space Grotesk';}
+  .result-text .desc{color:var(--text-muted); font-size:0.88rem; margin-top:0.3rem;}
+  .idle .result-text .desc{color:var(--text-muted);}
+
+  /* MITIGATION SECTION */
+  .mit-section{
+    background:var(--paper);
+    color:var(--ink-text);
+  }
+  .mit-head{max-width:60ch; margin-bottom:3rem;}
+  .mit-head .eyebrow{color:var(--safe-dim);}
+  .mit-head h2{font-size:clamp(1.8rem, 3.4vw, 2.6rem); color:var(--ink-text);}
+  .mit-head p{color:var(--ink-muted); margin-top:1rem;}
+  .mit-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2rem;
+  }
+  @media (max-width:800px){ .mit-grid{grid-template-columns:1fr;} }
+  .mit-card{
+    background:#fff;
+    border:1px solid var(--paper-border);
+    padding:2rem;
+    border-radius:4px;
+  }
+  .mit-card .num{font-family:'JetBrains Mono'; font-size:0.75rem; color:var(--safe-dim);}
+  .mit-card h3{margin-top:0.6rem; font-size:1.4rem;}
+  .mit-card .desc{color:var(--ink-muted); margin-top:0.7rem; font-size:0.92rem;}
+  .bar-row{margin-top:1.4rem;}
+  .bar-row .bar-label{
+    display:flex; justify-content:space-between;
+    font-size:0.78rem; font-family:'JetBrains Mono'; color:var(--ink-muted);
+    margin-bottom:0.35rem;
+  }
+  .bar-track{height:6px; background:#EAE7DC; border-radius:3px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--safe); border-radius:3px;}
+
+  .recommend{
+    margin-top:3rem;
+    background:var(--ink);
+    color:var(--text);
+    padding:2.4rem;
+    border-radius:4px;
+    display:flex;
+    gap:2rem;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .recommend .eyebrow{color:var(--gold);}
+  .recommend p{color:var(--text-muted); max-width:60ch;}
+
+  /* TEAM */
+  .team-section{background:var(--ink);}
+  .team-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap:1.5rem;
+    margin-top:2.5rem;
+  }
+  .team-card{
+    border:1px solid var(--border);
+    padding:1.4rem;
+    background:var(--panel);
+  }
+  .team-card .role{font-family:'JetBrains Mono'; font-size:0.7rem; color:var(--safe); text-transform:uppercase; letter-spacing:0.08em;}
+  .team-card .name{margin-top:0.5rem; font-weight:600; font-family:'Space Grotesk'; font-size:1.05rem;}
+
+  footer{
+    padding:3rem 8vw;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    gap:2rem;
+    flex-wrap:wrap;
+    font-size:0.8rem;
+    color:var(--text-muted);
+  }
+  footer .sources{max-width:60ch;}
+  footer .sources span{display:block; margin-top:0.3rem;}
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:none;}  /* MILESTONE ACCORDION */
+  .milestones{padding-top:0;}
+  .milestone{
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+    margin-bottom:1.2rem;
+    background:var(--panel);
+  }
+  .milestone-header{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:1.2rem;
+    padding:1.6rem 2rem;
+    background:transparent;
+    border:none;
+    cursor:pointer;
+    text-align:left;
+    color:var(--text);
+  }
+  .milestone-header .m-index{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.75rem;
+    letter-spacing:0.08em;
+    color:var(--safe);
+    text-transform:uppercase;
+    flex:none;
+    width:110px;
+  }
+  .milestone-header .m-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:1.2rem;
+    flex:1;
+  }
+  .milestone-header .chevron{
+    font-family:'JetBrains Mono', monospace;
+    font-size:1.2rem;
+    color:var(--text-muted);
+    transition:transform .25s ease;
+    flex:none;
+  }
+  .milestone.open .chevron{transform:rotate(45deg);}
+  .milestone.open .milestone-header{border-bottom:1px solid var(--border);}
+  .milestone-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .4s ease;
+  }
+  .milestone-inner{padding:0.5rem 0 1rem 0;}
+  .milestone-body section{padding:3rem 2rem;}
+  .milestone-body section:first-child{padding-top:2.5rem;}
+  @media (max-width:720px){
+    .milestone-header{padding:1.3rem 1.4rem;}
+    .milestone-header .m-index{width:auto; margin-right:0.4rem;}
+    .milestone-header .m-title{font-size:1.02rem;}
+    .milestone-body section{padding:2.2rem 1.4rem;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Milestone Projects for <span>CodePath</span></div>
+  <div class="navlinks">
+    <a data-open="milestone-1">Milestone 01</a>
+    <a data-open="milestone-2">Milestone 02</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <h1>PHI<span style="color:var(--risk);">$</span>H TANK</h1>
+  <p class="hero-sub">Every technical defense your company owns can be bypassed by one employee trusting the wrong email. We're pitching a two part defense that closes that gap without slowing anyone down.</p>
+</section>
+
+<section class="team-section reveal" id="team">
+  <div class="eyebrow">Team Members</div>
+  <div class="team-grid">
+    <div class="team-card"><div class="name">Anjanae Bell</div></div>
+    <div class="team-card"><div class="name">Raashid Amiri</div></div>
+    <div class="team-card"><div class="name">Daniel Reyes</div></div>
+    <div class="team-card"><div class="name">Richa Kumari</div></div>
+    <div class="team-card"><div class="name">Yandré Cabán Torres</div></div>
+  </div>
+</section>
+
+<section class="milestones reveal">
+
+  <div class="milestone" id="milestone-card-1">
+    <button class="milestone-header" data-toggle="milestone-1">
+      <span class="m-index">Milestone 01</span>
+      <span class="m-title">Making the Case — Risk, Demo &amp; Defense</span>
+      <span class="chevron">+</span>
+    </button>
+    <div class="milestone-body" id="milestone-1">
+      <div class="milestone-inner">
+
+        <section class="risk-section" id="risk">
+          <div class="risk-layout">
+            <div>
+              <div class="eyebrow risk">The Risk</div>
+              <h2>Phishing turns your own employees into an attack surface.</h2>
+              <p>Attackers don't need to break encryption or crack a firewall. They send an email that looks routine, an invoice, a password reset, a message from IT, and wait for one person to click. Industry breach research consistently points to the human element as a leading factor across confirmed data breaches, and phishing specifically remains one of the most common ways attackers get that first foothold.</p>
+              <ul class="risk-list">
+                <li><b>01</b> One compromised login can expose shared drives, email history, and internal systems.</li>
+                <li><b>02</b> Attacks scale cheaply. A single campaign can target hundreds of employees at once.</li>
+                <li><b>03</b> Recovery costs go beyond IT time: incident response, legal exposure, and client trust.</li>
+              </ul>
+            </div>
+            <div class="risk-card">
+              <div class="tag">Why it's urgent</div>
+              <h3>The weak point isn't technology.</h3>
+              <p>You can patch software. You cannot patch a moment of distraction. That's what makes social engineering different from every other risk on this list, and why the fix has to work with people, not just around them.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="demo-section" id="demo">
+          <div class="demo-head">
+            <div class="eyebrow">Live Demo</div>
+            <h2>Watch the same email go two different ways.</h2>
+            <p>This is the exact moment we're asking you to invest in. Toggle between an unprotected account and one covered by MFA, then click the link to see what happens.</p>
+          </div>
+
+          <div class="demo-toggle">
+            <button id="btn-unprotected" class="active risk-active">Without MFA</button>
+            <button id="btn-protected">With MFA</button>
+          </div>
+
+          <div class="inbox">
+            <div class="inbox-bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span style="margin-left:0.6rem;">inbox — 1 new message</span>
+            </div>
+            <div class="mail">
+              <div class="mail-from">From: <b>IT Support</b> &lt;it-helpdesk@corp-portal-verify.com&gt;</div>
+              <div class="mail-subject">Action required: your password expires in 2 hours</div>
+              <div class="mail-body">
+                Your account password is set to expire today. To avoid losing access, please verify your credentials now.
+                <br><br>
+                <span class="fake-link" id="fake-link">Verify My Account →</span>
+              </div>
+            </div>
+            <div class="result-panel idle" id="result-panel">
+              <div class="result-icon" id="result-icon" style="background:var(--panel-light); color:var(--text-muted);">?</div>
+              <div class="result-text">
+                <div class="title" id="result-title">Click the link above to run the simulation.</div>
+                <div class="desc" id="result-desc">We'll show you exactly what the employee, and the attacker, would see next.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mit-section" id="defense">
+          <div class="mit-head">
+            <div class="eyebrow">The Defense</div>
+            <h2>Two mitigations, compared honestly.</h2>
+            <p>Neither of these fixes phishing on its own. Together, they cover both halves of the problem: stopping the click, and surviving it if it happens anyway.</p>
+          </div>
+
+          <div class="mit-grid">
+            <div class="mit-card">
+              <div class="num">Mitigation 01</div>
+              <h3>Multi-Factor Authentication</h3>
+              <p class="desc">Even if a password is stolen, a second factor blocks the login. This is the safety net for the moment training doesn't catch.</p>
+              <div class="bar-row"><div class="bar-label"><span>Effectiveness at stopping account takeover</span><span>High</span></div><div class="bar-track"><div class="bar-fill" style="width:88%;"></div></div></div>
+              <div class="bar-row"><div class="bar-label"><span>Implementation cost</span><span>Low to moderate</span></div><div class="bar-track"><div class="bar-fill" style="width:35%;"></div></div></div>
+              <div class="bar-row"><div class="bar-label"><span>Time to roll out company-wide</span><span>Days to weeks</span></div><div class="bar-track"><div class="bar-fill" style="width:25%;"></div></div></div>
+            </div>
+            <div class="mit-card">
+              <div class="num">Mitigation 02</div>
+              <h3>Security Awareness Training</h3>
+              <p class="desc">Recurring, realistic phishing simulations and short training moments that teach employees to recognize the attempt before they ever click.</p>
+              <div class="bar-row"><div class="bar-label"><span>Effectiveness at preventing the click</span><span>Moderate to high</span></div><div class="bar-track"><div class="bar-fill" style="width:65%;"></div></div></div>
+              <div class="bar-row"><div class="bar-label"><span>Implementation cost</span><span>Low, ongoing</span></div><div class="bar-track"><div class="bar-fill" style="width:30%;"></div></div></div>
+              <div class="bar-row"><div class="bar-label"><span>Time to roll out company-wide</span><span>Weeks, recurring</span></div><div class="bar-track"><div class="bar-fill" style="width:45%;"></div></div></div>
+            </div>
+          </div>
+
+          <div class="recommend">
+            <div style="flex:1; min-width:240px;">
+              <div class="eyebrow">Our Recommendation</div>
+              <h3 style="font-size:1.5rem;">Fund both. Neither one covers the other's blind spot.</h3>
+            </div>
+            <p>Training reduces how often employees click in the first place. MFA contains the damage on the times they still do. Layered together, one compromised password stops being a company-wide incident and becomes a non-event.</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="milestone" id="milestone-card-2">
+    <button class="milestone-header" data-toggle="milestone-2">
+      <span class="m-index">Milestone 02</span>
+      <span class="m-title">Coming soon</span>
+      <span class="chevron">+</span>
+    </button>
+    <div class="milestone-body" id="milestone-2">
+      <div class="milestone-inner" style="padding:0.5rem 2rem 2.5rem; color:var(--text-muted); font-size:0.92rem;">
+        Content for Milestone 02 will go here.
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  <div>PHI$H TANK — CYB101 Group Capstone</div>
+  <div class="sources">
+    Sources referenced: NIST Cybersecurity Framework
+    <span>CISA, Cyber Threats and Advisories</span>
+    <span>OWASP, Phishing and OSINT</span>
+    <span>Verizon Data Breach Investigations Report</span>
+    <span>Microsoft Security</span>
+  </div>
+</footer>
+
+<script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, {threshold:0.12});
+  revealEls.forEach(el=>io.observe(el));
+
+  // milestone accordion
+  function openMilestone(id){
+    const body = document.getElementById(id);
+    const card = body.closest('.milestone');
+    card.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+  function closeMilestone(id){
+    const body = document.getElementById(id);
+    const card = body.closest('.milestone');
+    card.classList.remove('open');
+    body.style.maxHeight = '0px';
+  }
+  function toggleMilestone(id){
+    const body = document.getElementById(id);
+    const card = body.closest('.milestone');
+    if(card.classList.contains('open')){
+      closeMilestone(id);
+    } else {
+      openMilestone(id);
+    }
+  }
+
+  document.querySelectorAll('[data-toggle]').forEach(btn=>{
+    btn.addEventListener('click', ()=> toggleMilestone(btn.getAttribute('data-toggle')));
+  });
+
+  document.querySelectorAll('[data-open]').forEach(link=>{
+    link.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const id = link.getAttribute('data-open');
+      openMilestone(id);
+      const scrollTarget = link.getAttribute('data-scroll');
+      setTimeout(()=>{
+        const target = scrollTarget ? document.getElementById(scrollTarget) : document.getElementById('milestone-card-' + id.split('-')[1]);
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 120);
+    });
+  });
+
+  // recalc open milestone height if window resizes (demo toggle content can shift height)
+  window.addEventListener('resize', ()=>{
+    document.querySelectorAll('.milestone.open .milestone-body').forEach(body=>{
+      body.style.maxHeight = body.scrollHeight + 'px';
+    });
+  });
+
+  // demo toggle state
+  let mode = 'unprotected'; // or 'protected'
+  const btnUnprotected = document.getElementById('btn-unprotected');
+  const btnProtected = document.getElementById('btn-protected');
+  const fakeLink = document.getElementById('fake-link');
+  const resultPanel = document.getElementById('result-panel');
+  const resultIcon = document.getElementById('result-icon');
+  const resultTitle = document.getElementById('result-title');
+  const resultDesc = document.getElementById('result-desc');
+
+  function resetResult(){
+    resultPanel.style.background = 'transparent';
+    resultIcon.style.background = 'var(--panel-light)';
+    resultIcon.style.color = 'var(--text-muted)';
+    resultIcon.textContent = '?';
+    resultTitle.textContent = 'Click the link above to run the simulation.';
+    resultDesc.textContent = "We'll show you exactly what the employee, and the attacker, would see next.";
+  }
+
+  btnUnprotected.addEventListener('click', ()=>{
+    mode = 'unprotected';
+    btnUnprotected.classList.add('active','risk-active');
+    btnProtected.classList.remove('active');
+    resetResult();
+  });
+  btnProtected.addEventListener('click', ()=>{
+    mode = 'protected';
+    btnProtected.classList.add('active');
+    btnUnprotected.classList.remove('active','risk-active');
+    resetResult();
+  });
+
+  fakeLink.addEventListener('click', ()=>{
+    fakeLink.style.opacity = '0.5';
+    setTimeout(()=>{
+      if(mode === 'unprotected'){
+        resultPanel.style.background = 'rgba(255,90,60,0.08)';
+        resultIcon.style.background = 'var(--risk-dim)';
+        resultIcon.style.color = '#FFD6C8';
+        resultIcon.textContent = '!';
+        resultTitle.textContent = 'Credentials stolen. Login successful for the attacker.';
+        resultDesc.textContent = 'The password alone was enough. From here, the attacker has full account access, no second check required.';
+      } else {
+        resultPanel.style.background = 'rgba(34,211,174,0.08)';
+        resultIcon.style.background = 'var(--safe-dim)';
+        resultIcon.style.color = '#B6F5E8';
+        resultIcon.textContent = '✓';
+        resultTitle.textContent = 'Password stolen, login blocked.';
+        resultDesc.textContent = 'MFA prompts for a second factor the attacker does not have. The stolen password alone is not enough to get in.';
+      }
+      fakeLink.style.opacity = '1';
+      // demo lives inside an open accordion, keep its height in sync after content changes
+      const openBody = document.querySelector('.milestone.open .milestone-body');
+      if(openBody) openBody.style.maxHeight = openBody.scrollHeight + 'px';
+    }, 450);
+  });
+</script>
+
+</body>
+</html>
