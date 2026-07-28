@@ -202,6 +202,22 @@
   .risk-card h3{margin-top:0.6rem; font-size:1.3rem;}
   .risk-card p{color:var(--text-muted); margin-top:0.7rem; font-size:0.92rem;}
 
+  .risk-intro{
+    margin-bottom:3rem;
+    padding:1.5rem 1.8rem;
+    border:1px solid var(--border);
+    border-left:3px solid var(--safe);
+    background:var(--panel);
+    border-radius:4px;
+    max-width:70ch;
+  }
+  .risk-intro .tag{
+    font-family:'JetBrains Mono'; font-size:0.7rem;
+    text-transform:uppercase; letter-spacing:0.1em;
+  }
+  .risk-intro p{color:var(--text-muted); margin-top:0.7rem; font-size:0.95rem; line-height:1.75;}
+  .risk-intro b{color:var(--text); font-weight:600;}
+
   /* DEMO SECTION */
   .demo-section{background:var(--ink);}
   .demo-head{max-width:60ch; margin-bottom:3rem;}
@@ -250,6 +266,13 @@
   .mail-body{color:var(--text-muted); font-size:0.92rem; margin-top:0.9rem; line-height:1.7;}
   .fake-link{
     color:var(--risk);
+    text-decoration:underline;
+    text-decoration-style:dotted;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .report-btn{
+    color:var(--safe);
     text-decoration:underline;
     text-decoration-style:dotted;
     cursor:pointer;
@@ -350,65 +373,7 @@
   footer .sources span{display:block; margin-top:0.3rem;}
 
   .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
-  .reveal.in{opacity:1; transform:none;}  /* MILESTONE ACCORDION */
-  .milestones{padding-top:0;}
-  .milestone{
-    border:1px solid var(--border);
-    border-radius:8px;
-    overflow:hidden;
-    margin-bottom:1.2rem;
-    background:var(--panel);
-  }
-  .milestone-header{
-    width:100%;
-    display:flex;
-    align-items:center;
-    gap:1.2rem;
-    padding:1.6rem 2rem;
-    background:transparent;
-    border:none;
-    cursor:pointer;
-    text-align:left;
-    color:var(--text);
-  }
-  .milestone-header .m-index{
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.75rem;
-    letter-spacing:0.08em;
-    color:var(--safe);
-    text-transform:uppercase;
-    flex:none;
-    width:110px;
-  }
-  .milestone-header .m-title{
-    font-family:'Space Grotesk', sans-serif;
-    font-weight:600;
-    font-size:1.2rem;
-    flex:1;
-  }
-  .milestone-header .chevron{
-    font-family:'JetBrains Mono', monospace;
-    font-size:1.2rem;
-    color:var(--text-muted);
-    transition:transform .25s ease;
-    flex:none;
-  }
-  .milestone.open .chevron{transform:rotate(45deg);}
-  .milestone.open .milestone-header{border-bottom:1px solid var(--border);}
-  .milestone-body{
-    max-height:0;
-    overflow:hidden;
-    transition:max-height .4s ease;
-  }
-  .milestone-inner{padding:0.5rem 0 1rem 0;}
-  .milestone-body section{padding:3rem 2rem;}
-  .milestone-body section:first-child{padding-top:2.5rem;}
-  @media (max-width:720px){
-    .milestone-header{padding:1.3rem 1.4rem;}
-    .milestone-header .m-index{width:auto; margin-right:0.4rem;}
-    .milestone-header .m-title{font-size:1.02rem;}
-    .milestone-body section{padding:2.2rem 1.4rem;}
-  }
+  .reveal.in{opacity:1; transform:none;}
 </style>
 </head>
 <body>
@@ -416,8 +381,9 @@
 <nav>
   <div class="logo">Milestone Projects for <span>CodePath</span></div>
   <div class="navlinks">
-    <a data-open="milestone-1">Milestone 01</a>
-    <a data-open="milestone-2">Milestone 02</a>
+    <a href="#risk">The Risk</a>
+    <a href="#demo">Live Demo</a>
+    <a href="#defense">Defense</a>
   </div>
 </nav>
 
@@ -438,18 +404,11 @@
   </div>
 </section>
 
-<section class="milestones reveal">
-
-  <div class="milestone" id="milestone-card-1">
-    <button class="milestone-header" data-toggle="milestone-1">
-      <span class="m-index">Milestone 01</span>
-      <span class="m-title">Making the Case — Risk, Demo &amp; Defense</span>
-      <span class="chevron">+</span>
-    </button>
-    <div class="milestone-body" id="milestone-1">
-      <div class="milestone-inner">
-
-        <section class="risk-section" id="risk">
+<section class="risk-section reveal" id="risk">
+          <div class="risk-intro">
+            <div class="tag" style="color:var(--safe);">A quick definition</div>
+            <p><b>Social engineering</b> is the practice of manipulating a person, rather than a system, into doing something they normally wouldn't do, like handing over a password, approving a payment, or clicking a dangerous link. <b>Phishing</b> is the most common form of it: a fake email, text message, or website built to look routine and trustworthy enough that nobody stops to double check it before acting on it.</p>
+          </div>
           <div class="risk-layout">
             <div>
               <div class="eyebrow risk">The Risk</div>
@@ -469,7 +428,7 @@
           </div>
         </section>
 
-        <section class="demo-section" id="demo">
+        <section class="demo-section reveal" id="demo">
           <div class="demo-head">
             <div class="eyebrow">Live Demo</div>
             <h2>Watch the same email go two different ways.</h2>
@@ -488,11 +447,21 @@
             </div>
             <div class="mail">
               <div class="mail-from">From: <b>IT Support</b> &lt;it-helpdesk@corp-portal-verify.com&gt;</div>
-              <div class="mail-subject">Action required: your password expires in 2 hours</div>
+              <div class="mail-subject">Action required: unusual sign-in activity detected on your account</div>
               <div class="mail-body">
-                Your account password is set to expire today. To avoid losing access, please verify your credentials now.
+                Hi there,
                 <br><br>
-                <span class="fake-link" id="fake-link">Verify My Account →</span>
+                We noticed a sign-in attempt to your account from a device we don't recognize, based in a different region than your usual location. As a precaution, your account has been placed in a temporary limited access mode while we confirm this was you.
+                <br><br>
+                If you don't verify your identity within the next 2 hours, your mailbox and any shared files will be automatically locked pending a manual review by our security team, which can take up to 5 business days to complete.
+                <br><br>
+                To avoid any disruption, please confirm your identity using the secure link below. This will take less than a minute.
+                <br><br>
+                <span class="fake-link" id="fake-link">Verify My Identity →</span>
+                <br><br>
+                Thank you for helping us keep your account secure.
+                <br>
+                IT Support Team
               </div>
             </div>
             <div class="result-panel idle" id="result-panel">
@@ -503,9 +472,46 @@
               </div>
             </div>
           </div>
+
+          <div style="margin-top:3.5rem; padding-top:3rem; border-top:1px solid var(--border);">
+            <div class="eyebrow">Second Scenario</div>
+            <h2 style="font-size:clamp(1.4rem, 2.6vw, 1.9rem);">What if training teaches them to spot it first?</h2>
+            <p style="color:var(--text-muted); margin-top:0.9rem; max-width:60ch;">MFA is the safety net for the moment someone still clicks. Security Awareness Training is meant to stop that moment from happening at all. Here's a different kind of phishing email landing in an employee's inbox, this time with two choices: click it, or recognize the red flags and report it to IT.</p>
+
+            <div class="inbox" style="margin-top:2rem;">
+              <div class="inbox-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span style="margin-left:0.6rem;">inbox — 1 new message</span>
+              </div>
+              <div class="mail">
+                <div class="mail-from">From: <b>Document Center</b> &lt;notifications@docs-shared-secure.net&gt;</div>
+                <div class="mail-subject">Sarah Kim shared "Q3 Budget Review.xlsx" with you</div>
+                <div class="mail-body">
+                  Hi,
+                  <br><br>
+                  Sarah Kim has shared a file with you on Document Center. This file is marked confidential and requires review before end of day.
+                  <br><br>
+                  Click below to open it in your browser. You may be asked to sign in again to confirm your identity.
+                  <br><br>
+                  <span class="fake-link" id="report-link">Open Document →</span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <span class="report-btn" id="report-btn">Report as Phishing</span>
+                  <br><br>
+                  This message was sent by an automated notification service. Please do not reply.
+                </div>
+              </div>
+              <div class="result-panel idle" id="report-result">
+                <div class="result-icon" id="report-icon" style="background:var(--panel-light); color:var(--text-muted);">?</div>
+                <div class="result-text">
+                  <div class="title" id="report-title">Choose an action above to run this scenario.</div>
+                  <div class="desc" id="report-desc">See what happens when the employee clicks versus when they recognize it instead.</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section class="mit-section" id="defense">
+        <section class="mit-section reveal" id="defense">
           <div class="mit-head">
             <div class="eyebrow">The Defense</div>
             <h2>Two mitigations, compared honestly.</h2>
@@ -540,25 +546,6 @@
           </div>
         </section>
 
-      </div>
-    </div>
-  </div>
-
-  <div class="milestone" id="milestone-card-2">
-    <button class="milestone-header" data-toggle="milestone-2">
-      <span class="m-index">Milestone 02</span>
-      <span class="m-title">Coming soon</span>
-      <span class="chevron">+</span>
-    </button>
-    <div class="milestone-body" id="milestone-2">
-      <div class="milestone-inner" style="padding:0.5rem 2rem 2.5rem; color:var(--text-muted); font-size:0.92rem;">
-        Content for Milestone 02 will go here.
-      </div>
-    </div>
-  </div>
-
-</section>
-
 <footer>
   <div>PHI$H TANK — CYB101 Group Capstone</div>
   <div class="sources">
@@ -577,53 +564,6 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
   }, {threshold:0.12});
   revealEls.forEach(el=>io.observe(el));
-
-  // milestone accordion
-  function openMilestone(id){
-    const body = document.getElementById(id);
-    const card = body.closest('.milestone');
-    card.classList.add('open');
-    body.style.maxHeight = body.scrollHeight + 'px';
-  }
-  function closeMilestone(id){
-    const body = document.getElementById(id);
-    const card = body.closest('.milestone');
-    card.classList.remove('open');
-    body.style.maxHeight = '0px';
-  }
-  function toggleMilestone(id){
-    const body = document.getElementById(id);
-    const card = body.closest('.milestone');
-    if(card.classList.contains('open')){
-      closeMilestone(id);
-    } else {
-      openMilestone(id);
-    }
-  }
-
-  document.querySelectorAll('[data-toggle]').forEach(btn=>{
-    btn.addEventListener('click', ()=> toggleMilestone(btn.getAttribute('data-toggle')));
-  });
-
-  document.querySelectorAll('[data-open]').forEach(link=>{
-    link.addEventListener('click', (e)=>{
-      e.preventDefault();
-      const id = link.getAttribute('data-open');
-      openMilestone(id);
-      const scrollTarget = link.getAttribute('data-scroll');
-      setTimeout(()=>{
-        const target = scrollTarget ? document.getElementById(scrollTarget) : document.getElementById('milestone-card-' + id.split('-')[1]);
-        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-      }, 120);
-    });
-  });
-
-  // recalc open milestone height if window resizes (demo toggle content can shift height)
-  window.addEventListener('resize', ()=>{
-    document.querySelectorAll('.milestone.open .milestone-body').forEach(body=>{
-      body.style.maxHeight = body.scrollHeight + 'px';
-    });
-  });
 
   // demo toggle state
   let mode = 'unprotected'; // or 'protected'
@@ -676,9 +616,40 @@
         resultDesc.textContent = 'MFA prompts for a second factor the attacker does not have. The stolen password alone is not enough to get in.';
       }
       fakeLink.style.opacity = '1';
-      // demo lives inside an open accordion, keep its height in sync after content changes
-      const openBody = document.querySelector('.milestone.open .milestone-body');
-      if(openBody) openBody.style.maxHeight = openBody.scrollHeight + 'px';
+    }, 450);
+  });
+
+  // second demo: click versus recognize-and-report
+  const reportLink = document.getElementById('report-link');
+  const reportBtn = document.getElementById('report-btn');
+  const reportResult = document.getElementById('report-result');
+  const reportIcon = document.getElementById('report-icon');
+  const reportTitle = document.getElementById('report-title');
+  const reportDesc = document.getElementById('report-desc');
+
+  reportLink.addEventListener('click', ()=>{
+    reportLink.style.opacity = '0.5';
+    setTimeout(()=>{
+      reportResult.style.background = 'rgba(255,90,60,0.08)';
+      reportIcon.style.background = 'var(--risk-dim)';
+      reportIcon.style.color = '#FFD6C8';
+      reportIcon.textContent = '!';
+      reportTitle.textContent = 'Employee clicks without a second thought.';
+      reportDesc.textContent = 'The link opens a login page built to look identical to the real document portal. If this were live, the very next step would be typing in a password, exactly the moment awareness training exists to prevent.';
+      reportLink.style.opacity = '1';
+    }, 450);
+  });
+
+  reportBtn.addEventListener('click', ()=>{
+    reportBtn.style.opacity = '0.5';
+    setTimeout(()=>{
+      reportResult.style.background = 'rgba(34,211,174,0.08)';
+      reportIcon.style.background = 'var(--safe-dim)';
+      reportIcon.style.color = '#B6F5E8';
+      reportIcon.textContent = '✓';
+      reportTitle.textContent = 'Reported to IT before any damage was done.';
+      reportDesc.textContent = 'The employee noticed the mismatched sender domain and the manufactured urgency, and forwarded it to IT instead of clicking. IT confirms it as phishing and blocks the sender company-wide, protecting everyone else who received the same email.';
+      reportBtn.style.opacity = '1';
     }, 450);
   });
 </script>
