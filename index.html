@@ -237,7 +237,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    max-width: 900px; /* Matches your inbox max-width */
+    max-width: 900px;
   }
   .case-card {
     background: var(--panel);
@@ -255,10 +255,9 @@
     font-weight: 600;
     font-size: 1.1rem;
     cursor: pointer;
-    list-style: none; /* Hides default Safari arrow */
+    list-style: none;
     transition: background 0.2s;
   }
-  /* Hide default arrow in webkit */
   .case-summary::-webkit-details-marker {
     display: none;
   }
@@ -302,13 +301,98 @@
   .demo-head{max-width:60ch; margin-bottom:3rem;}
   .demo-head h2{font-size:clamp(1.8rem, 3.4vw, 2.6rem);}
   .demo-head p{color:var(--text-muted); margin-top:1rem;}
+
+  /* Carousel wrapper */
+  .carousel-wrap{
+    position:relative;
+    max-width:900px;
+  }
+  .carousel-track{
+    display:flex;
+    gap:2rem;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:1.2rem;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;
+  }
+  .carousel-track::-webkit-scrollbar{height:6px;}
+  .carousel-track::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
+  .carousel-slide{
+    flex:0 0 100%;
+    max-width:900px;
+    scroll-snap-align:start;
+  }
+  .slide-title{
+    font-size:clamp(1.3rem, 2.4vw, 1.7rem);
+    margin-bottom:0.6rem;
+  }
+  .slide-desc{
+    color:var(--text-muted);
+    font-size:0.92rem;
+    max-width:60ch;
+    margin-bottom:1.4rem;
+    line-height:1.7;
+  }
+  .carousel-controls{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:1.6rem;
+  }
+  .carousel-dots{
+    display:flex;
+    gap:0.5rem;
+  }
+  .dot-btn{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--border);
+    border:none;
+    cursor:pointer;
+    padding:0;
+    transition:background .2s, transform .2s;
+  }
+  .dot-btn.active{
+    background:var(--safe);
+    transform:scale(1.3);
+  }
+  .carousel-nav{
+    display:flex;
+    gap:0.6rem;
+  }
+  .nav-arrow{
+    width:38px; height:38px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text);
+    font-family:'JetBrains Mono';
+    font-size:1rem;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s, border-color .2s;
+  }
+  .nav-arrow:hover{background:var(--panel-light); border-color:var(--safe);}
+  .swipe-hint{
+    font-family:'JetBrains Mono';
+    font-size:0.72rem;
+    color:var(--text-muted);
+    letter-spacing:0.04em;
+  }
+  @media (max-width:720px){
+    .swipe-hint{display:none;}
+  }
+
   .demo-toggle{
     display:inline-flex;
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:999px;
     padding:0.3rem;
-    margin-bottom:2.2rem;
+    margin-bottom:1.6rem;
   }
   .demo-toggle button{
     font-family:'JetBrains Mono'; font-size:0.78rem;
@@ -568,85 +652,109 @@
             </details>
           </div>
         </section>
-        
+
         <section class="demo-section reveal" id="demo">
           <div class="demo-head">
             <div class="eyebrow">Live Demo</div>
-            <h2>Watch the same email go two different ways.</h2>
-            <p>This is the exact moment we're asking you to invest in. Toggle between an unprotected account and one covered by MFA, then click the link to see what happens.</p>
+            <h2>Watch the same click go two different ways.</h2>
+            <p>These are the two moments we're asking you to invest in. Swipe or use the arrows to move between the MFA scenario and the awareness training scenario.</p>
           </div>
 
-          <div class="demo-toggle">
-            <button id="btn-unprotected" class="active risk-active">Without MFA</button>
-            <button id="btn-protected">With MFA</button>
-          </div>
+          <div class="carousel-wrap">
+            <div class="carousel-track" id="carouselTrack">
 
-          <div class="inbox">
-            <div class="inbox-bar">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-              <span style="margin-left:0.6rem;">inbox — 1 new message</span>
-            </div>
-            <div class="mail">
-              <div class="mail-from">From: <b>IT Support</b> &lt;it-helpdesk@corp-portal-verify.com&gt;</div>
-              <div class="mail-subject">Action required: unusual sign-in activity detected on your account</div>
-              <div class="mail-body">
-                Hi there,
-                <br><br>
-                We noticed a sign-in attempt to your account from a device we don't recognize, based in a different region than your usual location. As a precaution, your account has been placed in a temporary limited access mode while we confirm this was you.
-                <br><br>
-                If you don't verify your identity within the next 2 hours, your mailbox and any shared files will be automatically locked pending a manual review by our security team, which can take up to 5 business days to complete.
-                <br><br>
-                To avoid any disruption, please confirm your identity using the secure link below. This will take less than a minute.
-                <br><br>
-                <span class="fake-link" id="fake-link">Verify My Identity →</span>
-                <br><br>
-                Thank you for helping us keep your account secure.
-                <br>
-                IT Support Team
-              </div>
-            </div>
-            <div class="result-panel idle" id="result-panel">
-              <div class="result-icon" id="result-icon" style="background:var(--panel-light); color:var(--text-muted);">?</div>
-              <div class="result-text">
-                <div class="title" id="result-title">Click the link above to run the simulation.</div>
-                <div class="desc" id="result-desc">We'll show you exactly what the employee, and the attacker, would see next.</div>
-              </div>
-            </div>
-          </div>
+              <!-- SLIDE 1: MFA -->
+              <div class="carousel-slide">
+                <h3 class="slide-title">Scenario 1 — Multi-Factor Authentication</h3>
+                <p class="slide-desc">Toggle between an unprotected account and one covered by MFA, then click the link to see what happens.</p>
 
-          <div style="margin-top:3.5rem; padding-top:3rem; border-top:1px solid var(--border);">
-            <div class="eyebrow">Second Scenario</div>
-            <h2 style="font-size:clamp(1.4rem, 2.6vw, 1.9rem);">What if training teaches them to spot it first?</h2>
-            <p style="color:var(--text-muted); margin-top:0.9rem; max-width:60ch;">MFA is the safety net for the moment someone still clicks. Security Awareness Training is meant to stop that moment from happening at all. Here's a different kind of phishing email landing in an employee's inbox, this time with two choices: click it, or recognize the red flags and report it to IT.</p>
+                <div class="demo-toggle">
+                  <button id="btn-unprotected" class="active risk-active">Without MFA</button>
+                  <button id="btn-protected">With MFA</button>
+                </div>
 
-            <div class="inbox" style="margin-top:2rem;">
-              <div class="inbox-bar">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                <span style="margin-left:0.6rem;">inbox — 1 new message</span>
-              </div>
-              <div class="mail">
-                <div class="mail-from">From: <b>Document Center</b> &lt;notifications@docs-shared-secure.net&gt;</div>
-                <div class="mail-subject">Sarah Kim shared "Q3 Budget Review.xlsx" with you</div>
-                <div class="mail-body">
-                  Hi,
-                  <br><br>
-                  Sarah Kim has shared a file with you on Document Center. This file is marked confidential and requires review before end of day.
-                  <br><br>
-                  Click below to open it in your browser. You may be asked to sign in again to confirm your identity.
-                  <br><br>
-                  <span class="fake-link" id="report-link">Open Document →</span>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <span class="report-btn" id="report-btn">Report as Phishing</span>
-                  <br><br>
-                  This message was sent by an automated notification service. Please do not reply.
+                <div class="inbox">
+                  <div class="inbox-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span style="margin-left:0.6rem;">inbox — 1 new message</span>
+                  </div>
+                  <div class="mail">
+                    <div class="mail-from">From: <b>IT Support</b> &lt;it-helpdesk@corp-portal-verify.com&gt;</div>
+                    <div class="mail-subject">Action required: unusual sign-in activity detected on your account</div>
+                    <div class="mail-body">
+                      Hi there,
+                      <br><br>
+                      We noticed a sign-in attempt to your account from a device we don't recognize, based in a different region than your usual location. As a precaution, your account has been placed in a temporary limited access mode while we confirm this was you.
+                      <br><br>
+                      If you don't verify your identity within the next 2 hours, your mailbox and any shared files will be automatically locked pending a manual review by our security team, which can take up to 5 business days to complete.
+                      <br><br>
+                      To avoid any disruption, please confirm your identity using the secure link below. This will take less than a minute.
+                      <br><br>
+                      <span class="fake-link" id="fake-link">Verify My Identity →</span>
+                      <br><br>
+                      Thank you for helping us keep your account secure.
+                      <br>
+                      IT Support Team
+                    </div>
+                  </div>
+                  <div class="result-panel idle" id="result-panel">
+                    <div class="result-icon" id="result-icon" style="background:var(--panel-light); color:var(--text-muted);">?</div>
+                    <div class="result-text">
+                      <div class="title" id="result-title">Click the link above to run the simulation.</div>
+                      <div class="desc" id="result-desc">We'll show you exactly what the employee, and the attacker, would see next.</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="result-panel idle" id="report-result">
-                <div class="result-icon" id="report-icon" style="background:var(--panel-light); color:var(--text-muted);">?</div>
-                <div class="result-text">
-                  <div class="title" id="report-title">Choose an action above to run this scenario.</div>
-                  <div class="desc" id="report-desc">See what happens when the employee clicks versus when they recognize it instead.</div>
+
+              <!-- SLIDE 2: TRAINING -->
+              <div class="carousel-slide">
+                <h3 class="slide-title">Scenario 2 — Security Awareness Training</h3>
+                <p class="slide-desc">MFA is the safety net for the moment someone still clicks. Training is meant to stop that moment from happening at all. Click the link, or recognize the red flags and report it to IT.</p>
+
+                <div class="inbox">
+                  <div class="inbox-bar">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                    <span style="margin-left:0.6rem;">inbox — 1 new message</span>
+                  </div>
+                  <div class="mail">
+                    <div class="mail-from">From: <b>Document Center</b> &lt;notifications@docs-shared-secure.net&gt;</div>
+                    <div class="mail-subject">Sarah Kim shared "Q3 Budget Review.xlsx" with you</div>
+                    <div class="mail-body">
+                      Hi,
+                      <br><br>
+                      Sarah Kim has shared a file with you on Document Center. This file is marked confidential and requires review before end of day.
+                      <br><br>
+                      Click below to open it in your browser. You may be asked to sign in again to confirm your identity.
+                      <br><br>
+                      <span class="fake-link" id="report-link">Open Document →</span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span class="report-btn" id="report-btn">Report as Phishing</span>
+                      <br><br>
+                      This message was sent by an automated notification service. Please do not reply.
+                    </div>
+                  </div>
+                  <div class="result-panel idle" id="report-result">
+                    <div class="result-icon" id="report-icon" style="background:var(--panel-light); color:var(--text-muted);">?</div>
+                    <div class="result-text">
+                      <div class="title" id="report-title">Choose an action above to run this scenario.</div>
+                      <div class="desc" id="report-desc">See what happens when the employee clicks versus when they recognize it instead.</div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+            </div>
+
+            <div class="carousel-controls">
+              <div class="carousel-dots">
+                <button class="dot-btn active" data-slide="0" aria-label="Go to scenario 1"></button>
+                <button class="dot-btn" data-slide="1" aria-label="Go to scenario 2"></button>
+              </div>
+              <span class="swipe-hint">swipe or use arrows to switch scenarios</span>
+              <div class="carousel-nav">
+                <button class="nav-arrow" id="prevSlide" aria-label="Previous scenario">←</button>
+                <button class="nav-arrow" id="nextSlide" aria-label="Next scenario">→</button>
               </div>
             </div>
           </div>
@@ -792,6 +900,48 @@
       reportDesc.textContent = 'The employee noticed the mismatched sender domain and the manufactured urgency, and forwarded it to IT instead of clicking. IT confirms it as phishing and blocks the sender company-wide, protecting everyone else who received the same email.';
       reportBtn.style.opacity = '1';
     }, 450);
+  });
+
+  // carousel logic
+  const track = document.getElementById('carouselTrack');
+  const slides = track.querySelectorAll('.carousel-slide');
+  const dots = document.querySelectorAll('.dot-btn');
+  const prevBtn = document.getElementById('prevSlide');
+  const nextBtn = document.getElementById('nextSlide');
+  let activeSlide = 0;
+
+  function goToSlide(index){
+    if(index < 0) index = 0;
+    if(index > slides.length - 1) index = slides.length - 1;
+    activeSlide = index;
+    track.scrollTo({ left: slides[index].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    updateDots();
+  }
+
+  function updateDots(){
+    dots.forEach((d,i)=>{ d.classList.toggle('active', i === activeSlide); });
+  }
+
+  dots.forEach(d=>{
+    d.addEventListener('click', ()=> goToSlide(parseInt(d.dataset.slide)));
+  });
+  prevBtn.addEventListener('click', ()=> goToSlide(activeSlide - 1));
+  nextBtn.addEventListener('click', ()=> goToSlide(activeSlide + 1));
+
+  // keep dots in sync when user swipes/scrolls manually
+  let scrollTimeout;
+  track.addEventListener('scroll', ()=>{
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(()=>{
+      let closest = 0;
+      let closestDist = Infinity;
+      slides.forEach((s,i)=>{
+        const dist = Math.abs(s.offsetLeft - track.offsetLeft - track.scrollLeft);
+        if(dist < closestDist){ closestDist = dist; closest = i; }
+      });
+      activeSlide = closest;
+      updateDots();
+    }, 100);
   });
 </script>
 
